@@ -17,6 +17,7 @@ plugins {
     // https://github.com/PaperMC/paperweight
     id("io.papermc.paperweight.userdev").version("1.3.8")
 }
+
 group = "dev.ckateptb.minecraft"
 version = "1.0.0-SNAPSHOT"
 
@@ -61,16 +62,15 @@ tasks {
     }
     build {
         // Uncomment next line if u need only embed, without shrink
-
         dependsOn(reobfJar, shadowJar)
         // Comment next line if u need only embed, without shrink
-//        dependsOn(reobfJar, "shrink")
+        // dependsOn(reobfJar, "shrink")
     }
     publish {
         // Uncomment next line if u need only embed
         dependsOn(reobfJar, shadowJar)
         // Comment next line if u need only embed, without shrink
-//        dependsOn(reobfJar, "shrink")
+        // dependsOn(reobfJar, "shrink")
 
     }
     withType<JavaCompile> {
