@@ -11,6 +11,7 @@ import java.util.function.Function;
 
 public class ServerThreadAtomChain<T> extends AbstractAtomChain<T> {
     private final SyncService syncService;
+
     ServerThreadAtomChain(T current) {
         super(current);
         this.syncService = IoC.getBean(SyncService.class);

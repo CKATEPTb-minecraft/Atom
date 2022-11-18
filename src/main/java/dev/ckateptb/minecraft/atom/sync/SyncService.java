@@ -34,7 +34,7 @@ public class SyncService {
      * Computes a result in server thread
      *
      * @param callable interface-function
-     * @param await if true then current thread will be frozen while server thread process callable
+     * @param await    if true then current thread will be frozen while server thread process callable
      * @param <T>      return type
      * @return callable result after complete
      * @throws Exception any exception during callable
