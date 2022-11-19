@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "dev.ckateptb.minecraft"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.1-SNAPSHOT"
 
 val rootPackage = "${project.group}.${project.name.toLowerCase()}"
 val internal = "${rootPackage}.internal"
@@ -35,6 +35,10 @@ dependencies {
     compileOnly("dev.ckateptb.minecraft:Nicotine:+")
 
     implementation("io.projectreactor:reactor-core:+")
+
+    implementation(platform("com.intellectualsites.bom:bom-1.18.x:1.19"))
+    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
+    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit") { isTransitive = false }
 
     compileOnly("org.projectlombok:lombok:+")
     annotationProcessor("org.projectlombok:lombok:+")
