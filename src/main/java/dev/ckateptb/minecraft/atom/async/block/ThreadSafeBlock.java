@@ -11,6 +11,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -36,6 +37,9 @@ public class ThreadSafeBlock {
         this.position = position;
     }
 
+    public BoundingBox getBoundingBox() {
+        return this.getLocation().getBlock().getBoundingBox();
+    }
 
     public boolean isSolid() {
         return world.getBlock(position).getMaterial().isSolid();
