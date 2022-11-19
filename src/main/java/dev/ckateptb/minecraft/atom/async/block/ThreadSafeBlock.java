@@ -149,9 +149,28 @@ public class ThreadSafeBlock {
         return this.position.getZ();
     }
 
+    // EditSession part
+    private EditSession editSession;
+
+    // sometime fawe work wrong, so need to define EditSession for task queue
+    public ThreadSafeBlock setEditSession(EditSession editSession) {
+        this.editSession = editSession;
+        return this;
+    }
+
     private void emit(Consumer<EditSession> consumer) {
-        try (EditSession sessions = Fawe.instance().getWorldEdit().newEditSessionBuilder().fastMode(true).allowedRegionsEverywhere().world(world).build()) {
-            consumer.accept(sessions);
+        if(this.editSession != null) {
+            consumer.accept(this.editSession);
+        } else {
+            try (EditSession sessions = defaultEditSession(world)) {
+                consumer.accept(sessions);
+            }
         }
     }
+
+    public static EditSession defaultEditSession(World world) {
+        return Fawe.instance().getWorldEdit().newEditSessionBuilder().fastMode(true).allowedRegionsEverywhere().world(world).build();
+    }
+
+    // EditSession part end
 }
