@@ -1,6 +1,9 @@
 package dev.ckateptb.minecraft.atom.async.block;
 
 import com.fastasyncworldedit.core.Fawe;
+import com.github.benmanes.caffeine.cache.AsyncCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.Scheduler;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
@@ -14,6 +17,9 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class ThreadSafeBlock {
@@ -163,18 +169,26 @@ public class ThreadSafeBlock {
     }
 
     private void emit(Consumer<EditSession> consumer) {
-        if(this.editSession != null) {
+        if (this.editSession != null) {
             consumer.accept(this.editSession);
         } else {
-            try (EditSession sessions = defaultEditSession(world)) {
-                consumer.accept(sessions);
-            }
+            autoClosableEditSession(world).thenAccept(consumer);
         }
     }
+
+    private static final AsyncCache<org.bukkit.World, EditSession> EDIT_SESSION_CACHE = Caffeine.newBuilder()
+            .expireAfterWrite(50, TimeUnit.MILLISECONDS)
+            .scheduler(Scheduler.systemScheduler())
+            .executor(Executors.newFixedThreadPool(2))
+            .evictionListener((world, editSession, removalCause) -> ((EditSession) editSession).close())
+            .buildAsync();
 
     public static EditSession defaultEditSession(World world) {
         return Fawe.instance().getWorldEdit().newEditSessionBuilder().fastMode(true).allowedRegionsEverywhere().world(world).build();
     }
 
+    public static CompletableFuture<EditSession> autoClosableEditSession(World world) {
+        return EDIT_SESSION_CACHE.get(BukkitAdapter.adapt(world), value -> defaultEditSession(BukkitAdapter.adapt(value)));
+    }
     // EditSession part end
 }
