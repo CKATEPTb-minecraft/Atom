@@ -39,7 +39,7 @@ public class AsyncService {
         if (location == null || !location.isWorldLoaded()) return Collections.emptySet();
         World world = location.getWorld();
         BoundingBox aabb = BoundingBox.of(location, x, y, z);
-        return entityLookupHandler.getEntities(world).stream()
+        return this.entityLookupHandler.getEntities(world).stream()
                 .parallel()
                 .filter(entity -> aabb.contains(entity.getBoundingBox()))
                 .collect(Collectors.toSet());
@@ -52,7 +52,7 @@ public class AsyncService {
      */
     @ThreadSafe
     public Set<Entity> getEntities() {
-        return entityLookupHandler.getEntities();
+        return this.entityLookupHandler.getEntities();
     }
 
     /**
@@ -63,6 +63,6 @@ public class AsyncService {
      */
     @ThreadSafe
     public Set<Entity> getEntities(World world) {
-        return entityLookupHandler.getEntities(world);
+        return this.entityLookupHandler.getEntities(world);
     }
 }

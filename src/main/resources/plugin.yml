@@ -3,5 +3,5 @@ version: '${projectVersion}'
 main: '${projectMainClass}'
 api-version: 1.19
 authors: [ CKATEPTb ]
-depend: [ Nicotine, FastAsyncWorldEdit, Caffeine ]
+depend: [ Nicotine, Caffeine, Varflex ]
 description: A set of tools that simplify asynchronous development.

@@ -57,10 +57,6 @@ description: ...
 ```
 * Run tasks in async thread
 ```java
-import dev.ckateptb.common.tableclothcontainer.IoC;
-import org.bukkit.plugin.java.JavaPlugin;
-import reactor.core.scheduler.Schedulers;
-
 public class PluginExample extends JavaPlugin {
     public PluginExample() {
         Schedulers.boundedElastic().schedule(() -> {
@@ -87,6 +83,10 @@ public class PluginExample extends JavaPlugin {
             // Only one instance of this common scheduler will be created
             // on the first call and is cached. The same instance is returned
             // on subsequent calls until it is disposed.
+        });
+        Atom.syncScheduler().schedule(() -> {
+            // The bukkit tick thread instance, a Scheduler that 
+            // can be used for sync sth with main server thread.
         });
     }
 }
@@ -124,20 +124,27 @@ public class PluginExample extends JavaPlugin {
     }
 }
 ```
+* Work with block
+```java
+public class ThreadSafeBlockExample {
+    public void example() {
+        // Pseudo async block placement example with queue
+        Schedulers.boundedElastic().schedule(() -> // Async thread 
+                Flux.fromIterable(blocks) // Flux from blocks iterator
+                        .parallel()
+                        // Declare queue 1 bpms = 50 bpt = 1000 bps
+                        .concatMap(block -> Mono.just(block).delayElement(Duration.of(1, ChronoUnit.MILLIS)))
+                        .runOn(new SyncScheduler()) // Call subscribe in main-thread
+                        .subscribe(block -> block.setType(Material.AIR, false))); // do sth
+    }
+}
+```
 * Work with AtomChain
 ```java
-import dev.ckateptb.minecraft.atom.chain.AtomChain;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
-import reactor.util.function.Tuple2;
-
-import java.util.function.Consumer;
-
 public class ChainExample {
     public ChainExample(Consumer<Player> playerConsumer) {
-        Player original = null;
-        AtomChain.of(original)
+        Player original = ...;
+        AtomChain.immediate(original) // Wrap player in current thread
                 .run(player -> player.sendMessage("Wow, deal message from current thread")) // Send message to player, from current thread
                 .zipWith(Bukkit.isPrimaryThread()) // Add data (current thread is server thread) to chain
                 .run(tuple -> { // Run in current thread
@@ -151,13 +158,12 @@ public class ChainExample {
                 })
                 .map(Tuple2::getT1) // remove attached data from chain
                 .sync() // switch to server thread scheduler
-                .runAndNoWait(player -> player.damage(5)) // deal damage without freeze current thread
-                .rude() // switch to mixed thread (process in current thread if allowed else in server thread)
-                .run(playerConsumer) // We do not know what is in this Consumer, so we reproduce it in a rude stream
+                .promise(player -> player.damage(5)) // deal damage without freeze current thread
+                .async() // switch to async thread scheduler
+                .run(playerConsumer) // We do not know what is in this Consumer, so we can receive error
                 .immediate() // switch to current thread
                 .run(player -> player.sendMessage("Wow, deal message from current thread again"));
     }
 }
-
 ```
 * Start work
