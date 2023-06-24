@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "dev.ckateptb.minecraft"
-version = "1.1.0-SNAPSHOT"
+version = "1.1.1-SNAPSHOT"
 
 val rootPackage = "${project.group}.${project.name.toLowerCase()}"
 val internal = "${rootPackage}.internal"
@@ -32,14 +32,14 @@ repositories {
 dependencies {
     paperDevBundle("1.19.2-R0.1-SNAPSHOT")
 
-    compileOnly("dev.ckateptb.minecraft:Nicotine:+")
-    compileOnly("dev.ckateptb.minecraft:Caffeine:+")
-    compileOnly("dev.ckateptb.minecraft:Varflex:+")
+    compileOnly("dev.ckateptb.minecraft:Nicotine:2.0.0-SNAPSHOT")
+    compileOnly("dev.ckateptb.minecraft:Caffeine:1.0.0-SNAPSHOT")
+    compileOnly("dev.ckateptb.minecraft:Varflex:1.0.2-SNAPSHOT")
 
-    implementation("io.projectreactor:reactor-core:+")
+    implementation("io.projectreactor:reactor-core:3.5.7")
 
-    compileOnly("org.projectlombok:lombok:+")
-    annotationProcessor("org.projectlombok:lombok:+")
+    compileOnly("org.projectlombok:lombok:1.18.28")
+    annotationProcessor("org.projectlombok:lombok:1.18.28")
 }
 
 tasks {
