@@ -12,8 +12,8 @@ public class Atom extends JavaPlugin {
 
     public Atom() {
         plugin = this;
-        IoC.scan(Atom.class, s -> !s.contains("internal"));
-        IoC.registerBean(this);
+        IoC.registerBean(this, Atom.class);
+        IoC.scan(Atom.class, s -> !s.contains("internal"), Atom.class.getPackageName());
     }
 
     public static Scheduler syncScheduler() {
