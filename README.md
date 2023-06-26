@@ -26,7 +26,7 @@ We use [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html) to manag
 - [X] Easy to use
 - [X] Include [reactor core](https://github.com/reactor/reactor-core)
 - [X] ServerThread sync
-- [X] ThreadSafe implementation [part of BukkitAPI](https://github.com/CKATEPTb-minecraft/Atom/tree/development/src/main/java/dev/ckateptb/minecraft/atom/async/AsyncService.java)
+- [X] ThreadSafe implementation [part of BukkitAPI](https://github.com/CKATEPTb-minecraft/Atom/tree/development/src/main/java/dev/ckateptb/minecraft/atom/adapter)
 - [X] Chain-based wrappers for sync part of code with ServerThread
 - [ ] Documented
 
@@ -94,7 +94,7 @@ public class PluginExample extends JavaPlugin {
 * Work with reactive stream [more info](https://www.infoq.com/articles/reactor-by-example/)
 ```java
 import dev.ckateptb.common.tableclothcontainer.IoC;
-import dev.ckateptb.minecraft.atom.async.AsyncService;
+import dev.ckateptb.minecraft.atom.adapter.AdapterUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -109,8 +109,7 @@ public class PluginExample extends JavaPlugin {
     public PluginExample() {
         Location location = ...;
         Schedulers.single().schedule(() -> { // run our code in single async thread
-            AsyncService asyncService = IoC.getBean(AsyncService.class); // get AsyncService instance
-            Collection<Entity> entities = asyncService.getNearbyEntities(location, 20, 20, 20); // thread safe get Nearby Entities
+            Collection<Entity> entities = AdapterUtils.adapt(location).getNearbyEntities(20, 20, 20); // thread safe get Nearby Entities
             Flux.fromIterable(entities) // Create a reactive stream data from entities
                     .parallel(entities.size()) // Each entity will be processed in a separate thread
                     .runOn(Schedulers.boundedElastic()) // We indicate that we want to process each entity in reusable threads
