@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,8 +42,47 @@ public class EntityAdapter implements Entity, Adapter<Entity> {
     }
 
     @Override
+    @SuppressWarnings("all")
+    public boolean teleport(@NotNull Location location, boolean ignorePassengers) {
+        return AtomChain.sync(this.handle_).map(entity -> entity.teleport(location, ignorePassengers)).get();
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public boolean teleport(@NotNull Location location, PlayerTeleportEvent.@NotNull TeleportCause cause, boolean ignorePassengers) {
+        return AtomChain.sync(this.handle_).map(entity -> entity.teleport(location, cause, ignorePassengers)).get();
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public boolean teleport(@NotNull Location location, boolean ignorePassengers, boolean dismount) {
+        return AtomChain.sync(this.handle_).map(entity -> entity.teleport(location, ignorePassengers, dismount)).get();
+    }
+
+    @Override
+    @SuppressWarnings("all")
     public boolean teleport(@NotNull Location location, PlayerTeleportEvent.@NotNull TeleportCause cause, boolean ignorePassengers, boolean dismount) {
         return AtomChain.sync(this.handle_).map(entity -> entity.teleport(location, cause, ignorePassengers, dismount)).get();
+    }
+
+    @Override
+    public boolean teleport(@NotNull Location location) {
+        return AtomChain.sync(this.handle_).map(entity -> entity.teleport(location)).get();
+    }
+
+    @Override
+    public boolean teleport(@NotNull Location location, PlayerTeleportEvent.@NotNull TeleportCause cause) {
+        return AtomChain.sync(this.handle_).map(entity -> entity.teleport(location, cause)).get();
+    }
+
+    @Override
+    public boolean teleport(@NotNull Entity destination) {
+        return AtomChain.sync(this.handle_).map(entity -> entity.teleport(destination)).get();
+    }
+
+    @Override
+    public boolean teleport(@NotNull Entity destination, PlayerTeleportEvent.@NotNull TeleportCause cause) {
+        return AtomChain.sync(this.handle_).map(entity -> entity.teleport(destination, cause)).get();
     }
 
     @Override
@@ -81,6 +121,16 @@ public class EntityAdapter implements Entity, Adapter<Entity> {
         return this.handle_.getTrackedPlayers().stream().map(AdapterUtils::adapt).collect(Collectors.toSet());
     }
 
+    public boolean equals(Object other) {
+        if (other instanceof EntityAdapter adapter) other = adapter.handle_;
+        return Objects.equals(this.handle_, other);
+    }
+
+    public int hashCode() {
+        return this.handle_.hashCode();
+    }
+
+    @SuppressWarnings("all")
     private static abstract class ExcludedMethods {
         public abstract Location getLocation();
 
@@ -88,7 +138,21 @@ public class EntityAdapter implements Entity, Adapter<Entity> {
 
         public abstract World getWorld();
 
+        public abstract boolean teleport(Location location, boolean ignorePassengers);
+
+        public abstract boolean teleport(Location location, PlayerTeleportEvent.TeleportCause cause, boolean ignorePassengers);
+
+        public abstract boolean teleport(Location location, boolean ignorePassengers, boolean dismount);
+
         public abstract boolean teleport(Location location, PlayerTeleportEvent.TeleportCause cause, boolean ignorePassengers, boolean dismount);
+
+        public abstract boolean teleport(Location location);
+
+        public abstract boolean teleport(Location location, PlayerTeleportEvent.TeleportCause cause);
+
+        public abstract boolean teleport(Entity destination);
+
+        public abstract boolean teleport(Entity destination, PlayerTeleportEvent.TeleportCause cause);
 
         public abstract List<Entity> getNearbyEntities(double x, double y, double z);
 

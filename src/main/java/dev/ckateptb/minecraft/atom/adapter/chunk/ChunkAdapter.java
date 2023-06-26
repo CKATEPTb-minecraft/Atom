@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 @Getter
 @RequiredArgsConstructor
@@ -34,6 +35,16 @@ public class ChunkAdapter implements Chunk, Adapter<Chunk> {
         return Arrays.stream(this.handle_.getEntities()).map(AdapterUtils::adapt).toArray(Entity[]::new);
     }
 
+    public boolean equals(Object other) {
+        if (other instanceof ChunkAdapter adapter) other = adapter.handle_;
+        return Objects.equals(this.handle_, other);
+    }
+
+    public int hashCode() {
+        return this.handle_.hashCode();
+    }
+
+    @SuppressWarnings("all")
     private abstract static class ExcludedMethods {
         public abstract World getWorld();
 

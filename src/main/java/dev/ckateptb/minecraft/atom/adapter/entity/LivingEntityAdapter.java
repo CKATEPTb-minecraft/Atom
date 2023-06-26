@@ -1,5 +1,6 @@
 package dev.ckateptb.minecraft.atom.adapter.entity;
 
+import com.destroystokyo.paper.block.TargetBlockInfo;
 import dev.ckateptb.minecraft.atom.adapter.AdapterUtils;
 import dev.ckateptb.minecraft.atom.chain.AtomChain;
 import lombok.Getter;
@@ -15,7 +16,9 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,6 +38,31 @@ public class LivingEntityAdapter extends EntityAdapter implements LivingEntity {
     }
 
     @Override
+    public @NotNull List<Block> getLineOfSight(@Nullable Set<Material> transparent, int maxDistance) {
+        return this.handle_.getLineOfSight(transparent, maxDistance).stream().map(AdapterUtils::adapt).collect(Collectors.toList());
+    }
+
+    @Override
+    public @NotNull Block getTargetBlock(@Nullable Set<Material> transparent, int maxDistance) {
+        return AdapterUtils.adapt(this.handle_.getTargetBlock(transparent, maxDistance));
+    }
+
+    @Override
+    public @Nullable Block getTargetBlock(int maxDistance) {
+        return AdapterUtils.adapt(this.handle_.getTargetBlock(maxDistance));
+    }
+
+    @Override
+    public @Nullable Block getTargetBlock(int maxDistance, TargetBlockInfo.@NotNull FluidMode fluidMode) {
+        return AdapterUtils.adapt(this.handle_.getTargetBlock(maxDistance, fluidMode));
+    }
+
+    @Override
+    public @Nullable Entity getTargetEntity(int maxDistance) {
+        return AdapterUtils.adapt(this.handle_.getTargetEntity(maxDistance));
+    }
+
+    @Override
     public @Nullable Entity getTargetEntity(int maxDistance, boolean ignoreBlocks) {
         return AdapterUtils.adapt(this.handle_.getTargetEntity(maxDistance, ignoreBlocks));
     }
@@ -42,6 +70,11 @@ public class LivingEntityAdapter extends EntityAdapter implements LivingEntity {
     @Override
     public @NotNull List<Block> getLastTwoTargetBlocks(@Nullable Set<Material> transparent, int maxDistance) {
         return this.handle_.getLastTwoTargetBlocks(transparent, maxDistance).stream().map(AdapterUtils::adapt).collect(Collectors.toList());
+    }
+
+    @Override
+    public @Nullable Block getTargetBlockExact(int maxDistance) {
+        return AdapterUtils.adapt(this.handle_.getTargetBlockExact(maxDistance));
     }
 
     @Override
@@ -55,9 +88,19 @@ public class LivingEntityAdapter extends EntityAdapter implements LivingEntity {
     }
 
     @Override
+    public boolean addPotionEffect(@NotNull PotionEffect effect) {
+        return AtomChain.sync(this.handle_).map(livingEntity -> livingEntity.addPotionEffect(effect)).get();
+    }
+
+    @Override
     @SuppressWarnings("all")
     public boolean addPotionEffect(@NotNull PotionEffect effect, boolean force) {
         return AtomChain.sync(this.handle_).map(livingEntity -> livingEntity.addPotionEffect(effect, force)).get();
+    }
+
+    @Override
+    public boolean addPotionEffects(@NotNull Collection<PotionEffect> effects) {
+        return AtomChain.sync(this.handle_).map(livingEntity -> livingEntity.addPotionEffects(effects)).get();
     }
 
     @Override
@@ -80,6 +123,16 @@ public class LivingEntityAdapter extends EntityAdapter implements LivingEntity {
         AtomChain.sync(this.handle_).run(livingEntity -> livingEntity.damage(amount, source));
     }
 
+    public boolean equals(Object other) {
+        if (other instanceof LivingEntityAdapter adapter) other = adapter.handle_;
+        return Objects.equals(this.handle_, other);
+    }
+
+    public int hashCode() {
+        return this.handle_.hashCode();
+    }
+
+    @SuppressWarnings("all")
     private abstract static class ExcludedMethods {
         public abstract Location getLocation();
 
@@ -120,6 +173,38 @@ public class LivingEntityAdapter extends EntityAdapter implements LivingEntity {
         public abstract Entity getLeashHolder() throws IllegalStateException;
 
         public abstract void damage(double amount);
+
         public abstract void damage(double amount, Entity source);
+
+        public abstract boolean teleport(Location location, boolean ignorePassengers);
+
+        public abstract boolean teleport(Location location, PlayerTeleportEvent.TeleportCause cause, boolean ignorePassengers);
+
+        public abstract boolean teleport(Location location, boolean ignorePassengers, boolean dismount);
+
+        public abstract boolean teleport(Location location);
+
+        public abstract boolean teleport(Location location, PlayerTeleportEvent.TeleportCause cause);
+
+        public abstract boolean teleport(Entity destination);
+
+        public abstract boolean teleport(Entity destination, PlayerTeleportEvent.TeleportCause cause);
+
+        public abstract List<Block> getLineOfSight(Set<Material> transparent, int maxDistance);
+
+        public abstract Block getTargetBlock(Set<Material> transparent, int maxDistance);
+
+        public abstract Block getTargetBlock(int maxDistance);
+
+        public abstract Block getTargetBlock(int maxDistance, com.destroystokyo.paper.block.TargetBlockInfo.FluidMode fluidMode);
+
+        public abstract Entity getTargetEntity(int maxDistance);
+
+        public abstract Block getTargetBlockExact(int maxDistance);
+
+        public abstract boolean addPotionEffect(PotionEffect effect);
+
+        public abstract boolean addPotionEffects(Collection<PotionEffect> effects);
+
     }
 }

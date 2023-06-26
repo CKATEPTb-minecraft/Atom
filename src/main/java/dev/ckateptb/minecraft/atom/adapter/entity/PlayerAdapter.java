@@ -1,6 +1,7 @@
 package dev.ckateptb.minecraft.atom.adapter.entity;
 
 import dev.ckateptb.minecraft.atom.adapter.AdapterUtils;
+import dev.ckateptb.minecraft.atom.adapter.location.LocationAdapter;
 import dev.ckateptb.minecraft.atom.chain.AtomChain;
 import io.papermc.paper.entity.RelativeTeleportFlag;
 import lombok.Getter;
@@ -17,7 +18,9 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -77,6 +80,16 @@ public class PlayerAdapter extends LivingEntityAdapter implements Player {
         return AtomChain.sync(this.handle_).map(player -> player.teleport(location, cause, ignorePassengers, dismount, teleportFlags)).get();
     }
 
+    public boolean equals(Object other) {
+        if (other instanceof PlayerAdapter adapter) other = adapter.handle_;
+        return Objects.equals(this.handle_, other);
+    }
+
+    public int hashCode() {
+        return this.handle_.hashCode();
+    }
+
+    @SuppressWarnings("all")
     private abstract static class ExcludedMethods {
         public abstract Location getLocation();
 
@@ -136,7 +149,36 @@ public class PlayerAdapter extends LivingEntityAdapter implements Player {
 
         public abstract Entity getSpectatorTarget();
 
-        public abstract boolean teleport(Location location, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause cause, boolean ignorePassengers, boolean dismount, io.papermc.paper.entity.RelativeTeleportFlag ... teleportFlags);
+        public abstract boolean teleport(Location location, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause cause, boolean ignorePassengers, boolean dismount, io.papermc.paper.entity.RelativeTeleportFlag... teleportFlags);
 
+        public abstract boolean teleport(Location location, boolean ignorePassengers);
+
+        public abstract boolean teleport(Location location, PlayerTeleportEvent.TeleportCause cause, boolean ignorePassengers);
+
+        public abstract boolean teleport(Location location, boolean ignorePassengers, boolean dismount);
+
+        public abstract boolean teleport(Location location);
+
+        public abstract boolean teleport(Location location, PlayerTeleportEvent.TeleportCause cause);
+
+        public abstract boolean teleport(Entity destination);
+
+        public abstract boolean teleport(Entity destination, PlayerTeleportEvent.TeleportCause cause);
+
+        public abstract List<Block> getLineOfSight(Set<Material> transparent, int maxDistance);
+
+        public abstract Block getTargetBlock(Set<Material> transparent, int maxDistance);
+
+        public abstract Block getTargetBlock(int maxDistance);
+
+        public abstract Block getTargetBlock(int maxDistance, com.destroystokyo.paper.block.TargetBlockInfo.FluidMode fluidMode);
+
+        public abstract Entity getTargetEntity(int maxDistance);
+
+        public abstract Block getTargetBlockExact(int maxDistance);
+
+        public abstract boolean addPotionEffect(PotionEffect effect);
+
+        public abstract boolean addPotionEffects(Collection<PotionEffect> effects);
     }
 }
