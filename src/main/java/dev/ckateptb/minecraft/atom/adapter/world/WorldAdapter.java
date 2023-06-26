@@ -12,10 +12,12 @@ import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,21 @@ public class WorldAdapter implements World, Adapter<World> {
         return AtomChain.sync(this.handle_)
                 .map(world -> world.regenerateChunk(x, z))
                 .get();
+    }
+
+    @Override
+    public @NotNull List<Entity> getEntities() {
+        return this.handle_.getEntities().stream().map(AdapterUtils::adapt).collect(Collectors.toList());
+    }
+
+    @Override
+    public @NotNull List<LivingEntity> getLivingEntities() {
+        return this.handle_.getLivingEntities().stream().map(AdapterUtils::adapt).collect(Collectors.toList());
+    }
+
+    @Override
+    public @NotNull Collection<Entity> getEntitiesByClasses(@NotNull Class<?>... classes) {
+        return this.handle_.getEntitiesByClasses(classes).stream().map(AdapterUtils::adapt).collect(Collectors.toList());
     }
 
     public boolean loadChunk(int x, int z, boolean generate) {
@@ -95,5 +112,11 @@ public class WorldAdapter implements World, Adapter<World> {
         public abstract Chunk getChunkAt(int x, int z);
 
         public abstract void save();
+
+        public abstract List<Entity> getEntities();
+
+        public abstract List<LivingEntity> getLivingEntities();
+
+        public abstract Collection<Entity> getEntitiesByClasses(Class<?>... classes);
     }
 }

@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "dev.ckateptb.minecraft"
-version = "1.2.0-SNAPSHOT"
+version = "1.2.1-SNAPSHOT"
 
 val rootPackage = "${project.group}.${project.name.toLowerCase()}"
 val internal = "${rootPackage}.internal"
