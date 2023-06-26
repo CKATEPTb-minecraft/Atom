@@ -83,7 +83,7 @@ public class LivingEntityAdapter extends EntityAdapter implements LivingEntity {
     private abstract static class ExcludedMethods {
         public abstract Location getLocation();
 
-        public abstract Location getLocation(@Nullable Location loc);
+        public abstract Location getLocation(Location loc);
 
         public abstract World getWorld();
 
@@ -107,19 +107,19 @@ public class LivingEntityAdapter extends EntityAdapter implements LivingEntity {
 
         public abstract Entity getTargetEntity(int maxDistance, boolean ignoreBlocks);
 
-        public abstract List<Block> getLastTwoTargetBlocks(@Nullable Set<Material> transparent, int maxDistance);
+        public abstract List<Block> getLastTwoTargetBlocks(Set<Material> transparent, int maxDistance);
 
-        public abstract Block getTargetBlockExact(int maxDistance, @NotNull FluidCollisionMode fluidCollisionMode);
+        public abstract Block getTargetBlockExact(int maxDistance, FluidCollisionMode fluidCollisionMode);
 
         public abstract Player getKiller();
 
-        public abstract boolean addPotionEffect(@NotNull PotionEffect effect, boolean force);
+        public abstract boolean addPotionEffect(PotionEffect effect, boolean force);
 
-        public abstract void removePotionEffect(@NotNull PotionEffectType type);
+        public abstract void removePotionEffect(PotionEffectType type);
 
         public abstract Entity getLeashHolder() throws IllegalStateException;
 
         public abstract void damage(double amount);
-        public abstract void damage(double amount, @Nullable Entity source);
+        public abstract void damage(double amount, Entity source);
     }
 }

@@ -80,7 +80,7 @@ public class PlayerAdapter extends LivingEntityAdapter implements Player {
     private abstract static class ExcludedMethods {
         public abstract Location getLocation();
 
-        public abstract Location getLocation(@Nullable Location loc);
+        public abstract Location getLocation(Location loc);
 
         public abstract World getWorld();
 
@@ -104,39 +104,39 @@ public class PlayerAdapter extends LivingEntityAdapter implements Player {
 
         public abstract Entity getTargetEntity(int maxDistance, boolean ignoreBlocks);
 
-        public abstract List<Block> getLastTwoTargetBlocks(@Nullable Set<Material> transparent, int maxDistance);
+        public abstract List<Block> getLastTwoTargetBlocks(Set<Material> transparent, int maxDistance);
 
-        public abstract Block getTargetBlockExact(int maxDistance, @NotNull FluidCollisionMode fluidCollisionMode);
+        public abstract Block getTargetBlockExact(int maxDistance, FluidCollisionMode fluidCollisionMode);
 
         public abstract Player getKiller();
 
-        public abstract boolean addPotionEffect(@NotNull PotionEffect effect, boolean force);
+        public abstract boolean addPotionEffect(PotionEffect effect, boolean force);
 
-        public abstract void removePotionEffect(@NotNull PotionEffectType type);
+        public abstract void removePotionEffect(PotionEffectType type);
 
         public abstract Entity getLeashHolder() throws IllegalStateException;
 
         public abstract void damage(double amount);
 
-        public abstract void damage(double amount, @Nullable Entity source);
+        public abstract void damage(double amount, Entity source);
 
         public abstract Location getCompassTarget();
 
-        public abstract void kickPlayer(@Nullable String message);
+        public abstract void kickPlayer(String message);
 
         public abstract void kick();
 
-        public abstract void kick(final @Nullable net.kyori.adventure.text.Component message);
+        public abstract void kick(final net.kyori.adventure.text.Component message);
 
-        public abstract void kick(final @Nullable Component message, @NotNull org.bukkit.event.player.PlayerKickEvent.Cause cause);
+        public abstract void kick(final Component message, org.bukkit.event.player.PlayerKickEvent.Cause cause);
 
         public abstract Location getBedSpawnLocation();
 
-        public abstract boolean breakBlock(@NotNull Block block);
+        public abstract boolean breakBlock(Block block);
 
         public abstract Entity getSpectatorTarget();
 
-        public abstract boolean teleport(@NotNull Location location, @NotNull org.bukkit.event.player.PlayerTeleportEvent.TeleportCause cause, boolean ignorePassengers, boolean dismount, @NotNull io.papermc.paper.entity.RelativeTeleportFlag @NotNull ... teleportFlags);
+        public abstract boolean teleport(Location location, org.bukkit.event.player.PlayerTeleportEvent.TeleportCause cause, boolean ignorePassengers, boolean dismount, io.papermc.paper.entity.RelativeTeleportFlag ... teleportFlags);
 
     }
 }

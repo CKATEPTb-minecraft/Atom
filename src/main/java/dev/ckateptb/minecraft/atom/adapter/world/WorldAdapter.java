@@ -40,6 +40,7 @@ public class WorldAdapter implements World, Adapter<World> {
     }
 
     @Override
+    @SuppressWarnings("all")
     public boolean regenerateChunk(int x, int z) {
         return AtomChain.sync(this.handle_)
                 .map(world -> world.regenerateChunk(x, z))

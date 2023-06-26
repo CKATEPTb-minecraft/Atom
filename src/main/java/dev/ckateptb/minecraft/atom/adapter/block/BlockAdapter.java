@@ -52,7 +52,7 @@ public class BlockAdapter implements Block, Adapter<Block> {
 
         public abstract Chunk getChunk();
 
-        public abstract Location getLocation(@Nullable Location loc);
+        public abstract Location getLocation(Location loc);
 
         public abstract Location getLocation();
 
