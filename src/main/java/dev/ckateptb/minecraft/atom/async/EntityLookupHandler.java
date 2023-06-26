@@ -3,7 +3,7 @@ package dev.ckateptb.minecraft.atom.async;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import dev.ckateptb.common.tableclothcontainer.annotation.Component;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
@@ -15,8 +15,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Component
-@NoArgsConstructor
-class EntityLookupHandler implements Listener {
+public class EntityLookupHandler implements Listener {
+    @Getter
+    private static EntityLookupHandler instance;
+
+    public EntityLookupHandler() {
+        instance = this;
+    }
+
     private final Map<UUID, Set<Entity>> entities = new ConcurrentHashMap<>();
 
     @EventHandler(priority = EventPriority.MONITOR)
