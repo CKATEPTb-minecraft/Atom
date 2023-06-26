@@ -29,8 +29,8 @@ public class LocationAdapter extends Location implements Adapter<Location> {
 
     private abstract static class ExcludedMethods {
         public abstract World getWorld();
-        public abstract List<Block> getLineOfSight(@Nullable Set<Material> transparent, int maxDistance);
-        public abstract Block getTargetBlock(@Nullable Set<Material> transparent, int maxDistance);
+        public abstract List<Block> getLineOfSight(Set<Material> transparent, int maxDistance);
+        public abstract Block getTargetBlock(Set<Material> transparent, int maxDistance);
         public abstract Block getTargetBlock(int maxDistance, com.destroystokyo.paper.block.TargetBlockInfo.FluidMode fluidMode);
     }
 }

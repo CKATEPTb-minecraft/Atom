@@ -84,7 +84,7 @@ public class EntityAdapter implements Entity, Adapter<Entity> {
     private static abstract class ExcludedMethods {
         public abstract Location getLocation();
 
-        public abstract Location getLocation(@Nullable Location loc);
+        public abstract Location getLocation(Location loc);
 
         public abstract World getWorld();
 
