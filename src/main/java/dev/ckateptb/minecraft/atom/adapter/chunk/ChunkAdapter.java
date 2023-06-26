@@ -8,7 +8,10 @@ import lombok.experimental.Delegate;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
@@ -26,9 +29,16 @@ public class ChunkAdapter implements Chunk, Adapter<Chunk> {
         return AdapterUtils.adapt(this.handle_.getBlock(x, y, z));
     }
 
+    @Override
+    public Entity[] getEntities() {
+        return Arrays.stream(this.handle_.getEntities()).map(AdapterUtils::adapt).toArray(Entity[]::new);
+    }
+
     private abstract static class ExcludedMethods {
         public abstract World getWorld();
 
         public abstract Block getBlock(int x, int y, int z);
+
+        public abstract Entity[] getEntities();
     }
 }
