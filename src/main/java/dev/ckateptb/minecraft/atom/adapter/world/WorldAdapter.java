@@ -132,7 +132,7 @@ public class WorldAdapter implements World, Adapter<World> {
 
     @Override
     public @NotNull Collection<Entity> getNearbyEntities(@NotNull BoundingBox boundingBox, Predicate<Entity> filter) {
-        if (Bukkit.isPrimaryThread()) return this.handle_.getNearbyEntities(boundingBox, filter);
+//        if (Bukkit.isPrimaryThread()) return this.handle_.getNearbyEntities(boundingBox, filter);
         return EntityLookupHandler.getInstance().getEntities(this.handle_).stream()
                 .parallel()
                 .filter(entity -> boundingBox.contains(entity.getBoundingBox())
