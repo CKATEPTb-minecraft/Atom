@@ -36,7 +36,7 @@ dependencies {
     compileOnly("dev.ckateptb.minecraft:Caffeine:1.0.0-SNAPSHOT")
     compileOnly("dev.ckateptb.minecraft:Varflex:1.0.2-SNAPSHOT")
 
-    implementation("io.projectreactor:reactor-core:3.5.7")
+    implementation("io.projectreactor:reactor-core:3.5.11")
 
     compileOnly("org.projectlombok:lombok:1.18.28")
     annotationProcessor("org.projectlombok:lombok:1.18.28")
