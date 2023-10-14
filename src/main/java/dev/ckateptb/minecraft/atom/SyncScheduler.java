@@ -1,13 +1,12 @@
-package dev.ckateptb.minecraft.atom.scheduler;
+package dev.ckateptb.minecraft.atom;
 
-import dev.ckateptb.minecraft.atom.Atom;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.Disposable;
 import reactor.core.scheduler.Scheduler;
 
-public class SyncScheduler implements Scheduler {
+class SyncScheduler implements Scheduler {
     @Override
     public @NotNull Disposable schedule(@NotNull Runnable task) {
         BukkitRunnable runnable = new BukkitRunnable() {
