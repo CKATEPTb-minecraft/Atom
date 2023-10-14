@@ -28,7 +28,6 @@ We use [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html) to manag
 - [X] ServerThread sync
 - [X] ThreadSafe implementation [part of BukkitAPI](https://github.com/CKATEPTb-minecraft/Atom/tree/development/src/main/java/dev/ckateptb/minecraft/atom/adapter)
 - [X] Chain-based wrappers for sync part of code with ServerThread
-- [ ] Documented
 
 # Download
 
@@ -108,18 +107,15 @@ import java.util.Comparator;
 public class PluginExample extends JavaPlugin {
     public PluginExample() {
         Location location = ...;
-        Schedulers.single().schedule(() -> { // run our code in single async thread
-            Collection<Entity> entities = AdapterUtils.adapt(location).getNearbyEntities(20, 20, 20); // thread safe get Nearby Entities
-            Flux.fromIterable(entities) // Create a reactive stream data from entities
-                    .parallel(entities.size()) // Each entity will be processed in a separate thread
-                    .runOn(Schedulers.boundedElastic()) // We indicate that we want to process each entity in reusable threads
-                    .filter(entity -> entity instanceof LivingEntity) // filter entity is living
-                    .sorted(Comparator.comparingDouble(entity -> entity.getLocation().distanceSquared(location))) // sort by distance
-                    .doOnNext(entity -> System.out.println("Wow, one more living entity!"))
-                    .doOnSubscribe(subscription -> subscription.request(20)) // request 20 entity
-                    .subscribe(); // subscribe reactive stream
-
-        });
+        Mono.just(location)
+                .publishOn(Atom.syncScheduler()) // Switch to main-thread
+                .flatMapMany(value -> Flux.fromIterable(value.getNearbyEntities(20, 20, 20))) // Call AsyncCatchOp method 
+                .publishOn(Schedulers.boundedElastic()) // Switch to other thread
+                .filter(entity -> entity instanceof LivingEntity) // filter entity is living
+                .sort(Comparator.comparingDouble(entity -> entity.getLocation().distanceSquared(location))) // sort by distance
+                .doOnNext(entity -> System.out.println("Wow, one more living entity!"))
+                .doOnSubscribe(subscription -> subscription.request(20)) // request 20 entity
+                .subscribe(living -> /*to do*/); // subscribe reactive stream
     }
 }
 ```
@@ -130,38 +126,10 @@ public class ThreadSafeBlockExample {
         // Pseudo async block placement example with queue
         Schedulers.boundedElastic().schedule(() -> // Async thread 
                 Flux.fromIterable(blocks) // Flux from blocks iterator
-                        .parallel()
                         // Declare queue 1 bpms = 50 bpt = 1000 bps
                         .concatMap(block -> Mono.just(block).delayElement(Duration.of(1, ChronoUnit.MILLIS)))
-                        .runOn(new SyncScheduler()) // Call subscribe in main-thread
+                        .publishOn(Atom.syncScheduler()) // Switch to main-thread
                         .subscribe(block -> block.setType(Material.AIR, false))); // do sth
-    }
-}
-```
-* Work with AtomChain
-```java
-public class ChainExample {
-    public ChainExample(Consumer<Player> playerConsumer) {
-        Player original = ...;
-        AtomChain.immediate(original) // Wrap player in current thread
-                .run(player -> player.sendMessage("Wow, deal message from current thread")) // Send message to player, from current thread
-                .zipWith(Bukkit.isPrimaryThread()) // Add data (current thread is server thread) to chain
-                .run(tuple -> { // Run in current thread
-                    Player player = tuple.getT1();
-                    boolean isServerThread = tuple.getT2();
-                    if(isServerThread) {
-                        player.damage(5); // we can deal damage only in server thread
-                    } else {
-                        player.setVelocity(Vector.getRandom()); // we can apply velocity in any thread
-                    }
-                })
-                .map(Tuple2::getT1) // remove attached data from chain
-                .sync() // switch to server thread scheduler
-                .promise(player -> player.damage(5)) // deal damage without freeze current thread
-                .async() // switch to async thread scheduler
-                .run(playerConsumer) // We do not know what is in this Consumer, so we can receive error
-                .immediate() // switch to current thread
-                .run(player -> player.sendMessage("Wow, deal message from current thread again"));
     }
 }
 ```
