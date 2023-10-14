@@ -26,7 +26,6 @@ We use [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html) to manag
 - [X] Easy to use
 - [X] Include [reactor core](https://github.com/reactor/reactor-core)
 - [X] ServerThread sync
-- [X] ThreadSafe implementation [part of BukkitAPI](https://github.com/CKATEPTb-minecraft/Atom/tree/development/src/main/java/dev/ckateptb/minecraft/atom/adapter)
 - [X] Chain-based wrappers for sync part of code with ServerThread
 
 # Download
