@@ -28,6 +28,10 @@ We use [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html) to manag
 - [X] ServerThread sync
 - [X] Chain-based wrappers for sync part of code with ServerThread
 
+# Important
+
+- On paper(and forks) 1.19.3+ [enable circular loading](https://docs.papermc.io/paper/reference/paper-plugins#what-is-the-difference)
+
 # Download
 
 Download from our repository or depend via Gradle:

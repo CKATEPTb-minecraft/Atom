@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "dev.ckateptb.minecraft"
-version = "1.3.0-SNAPSHOT"
+version = "1.3.1-SNAPSHOT"
 
 val rootPackage = "${project.group}.${project.name.toLowerCase()}"
 val internal = "${rootPackage}.internal"
@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    paperDevBundle("1.19.2-R0.1-SNAPSHOT")
+    paperDevBundle("1.20.2-R0.1-SNAPSHOT")
 
     compileOnly("dev.ckateptb.minecraft:Nicotine:2.0.0-SNAPSHOT")
     compileOnly("dev.ckateptb.minecraft:Caffeine:1.0.0-SNAPSHOT")
